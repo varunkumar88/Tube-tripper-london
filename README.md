@@ -5,8 +5,6 @@ TubeTripperLondon (TTL) is a journey planner webapp for planning tube journeys i
 
 TTL is hosted by Amazon Web Services (AWS). However, the application can also run on `localhost`, follow the steps below to do this.
 
-Developed by <a href="mailto:557860@student.saxion.nl">Varun Kumar Chalotra</a>, <a href="mailto:559078@student.saxion.nl">Nuno Ludovice</a> and <a href="mailto:478620@student.saxion.nl">Nick Somsen</a> in commision of the (pretend) customer Deepak Tunuguntla.
-
 ## Prerequisites
 Node.js and npm need to be installed. TTL was developed using Node.js version `18.17.1`.
 
