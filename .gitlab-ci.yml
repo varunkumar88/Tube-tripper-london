@@ -1,0 +1,134 @@
+# This file is a template, and might need editing before it works on your project.
+# This is a sample GitLab CI/CD configuration file that should run without any modifications.
+# It demonstrates a basic 3 stage CI/CD pipeline. Instead of real tests or scripts,
+# it uses echo commands to simulate the pipeline execution.
+#
+# A pipeline is composed of independent jobs that run scripts, grouped into stages.
+# Stages run in sequential order, but jobs within stages run in parallel.
+#
+# For more information, see: https://docs.gitlab.com/ee/ci/yaml/index.html#stages
+#
+# You can copy and paste this template into a new `.gitlab-ci.yml` file.
+# You should not add this template to an existing `.gitlab-ci.yml` file by using the `include:` keyword.
+#
+# To contribute improvements to CI/CD templates, please follow the Development guide at:
+# https://docs.gitlab.com/ee/development/cicd/templates.html
+# This specific template is located at:
+# https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Getting-Started.gitlab-ci.yml
+
+stages:         # List of stages for jobs, and their order of execution
+  - test
+  - deploy
+
+frontend-test-job:
+  image: node:18.17.1
+  stage: test
+  before_script:
+    - cd frontend
+    - npm install
+  script:
+    - npm run test:ci
+  artifacts:
+    when: always
+    reports:
+      junit:
+        - frontend/junit.xml
+
+backend-test-job:
+  image: node:18.17.1
+  stage: test
+  before_script:
+    - cd backend
+    - npm install
+  script:
+    - npm run test:ci
+  artifacts:
+    when: always
+    reports:
+      junit:
+        - backend/junit.xml
+
+deploy-backend-instance-1-job:
+  stage: deploy
+  environment: production
+  before_script:
+    - export REDIS_PRIMARY_ENDPOINT="$REDIS_PRIMARY_ENDPOINT"
+    - export ENV="$ENV"
+    - export TfL_APP_ID="$TfL_APP_ID"
+    - export TfL_APP_KEY="$TfL_APP_KEY"
+    - export TfL_BASE_URL="$TfL_BASE_URL"
+    - export TfL_JOURNEY_ENDPOINT="$TfL_JOURNEY_ENDPOINT"
+    - sudo iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT --to-port 3000
+    - cd backend
+    - npm install
+  script:
+    - npm install -g pm2
+    - pm2 stop all --silent || true  # Stop all running pm2 processes, ignore errors if no processes are found
+    - npm ci --only=production
+    - pm2 start npm -- start
+  tags:
+    - TTL-BE-1
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+
+deploy-backend-instance-2-job:
+  stage: deploy
+  environment: production
+  before_script:
+    - export REDIS_PRIMARY_ENDPOINT="$REDIS_PRIMARY_ENDPOINT"
+    - export ENV="$ENV"
+    - export TfL_APP_ID="$TfL_APP_ID"
+    - export TfL_APP_KEY="$TfL_APP_KEY"
+    - export TfL_BASE_URL="$TfL_BASE_URL"
+    - export TfL_JOURNEY_ENDPOINT="$TfL_JOURNEY_ENDPOINT"
+    - sudo iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT --to-port 3000
+    - cd backend
+    - npm install
+  script:
+    - npm install -g pm2
+    - pm2 stop all --silent || true  # Stop all running pm2 processes, ignore errors if no processes are found
+    - npm ci --only=production
+    - pm2 start npm -- start
+  tags:
+    - TTL-BE-2
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+
+deploy-frontend-instance-1-job:
+  stage: deploy
+  environment: production
+  before_script:
+    - export REACT_APP_API_URL="$REACT_APP_API_URL"
+    - export GENERATE_SOURCEMAP=$GENERATE_SOURCEMAP
+    - sudo iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT --to-port 3000
+    - cd frontend
+    - npm install
+  script:
+    - npm install -g pm2
+    - pm2 stop all --silent || true  # Stop all running pm2 processes, ignore errors if no processes are found
+    - npm ci --only=production
+    - pm2 start npm -- start
+  tags:
+    - TTL-FE-1
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+
+deploy-frontend-instance-2-job:
+  stage: deploy
+  environment: production
+  before_script:
+    - export REACT_APP_API_URL="$REACT_APP_API_URL"
+    - export GENERATE_SOURCEMAP=$GENERATE_SOURCEMAP
+    - sudo iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT --to-port 3000
+    - cd frontend
+    - npm install
+  script:
+    - npm install -g pm2
+    - pm2 stop all --silent || true  # Stop all running pm2 processes, ignore errors if no processes are found
+    - npm ci --only=production
+    - pm2 start npm -- start
+  tags:
+    - TTL-FE-2
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+

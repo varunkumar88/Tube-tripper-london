@@ -1,0 +1,25 @@
+.wrapper {
+    padding: 3rem 0;
+    background-image: url("../../../public/london_map.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.main-container {
+    max-width: 40rem;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.swap-arrow {
+    padding-top: 2.5rem;
+}
+
+.results-inactive {
+    /* give a set height because the component by itself is not tall enough to cover the entire page */
+    height: 90vh;
+}
+
+.results-active {
+    height: unset;
+}

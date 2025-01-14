@@ -1,0 +1,59 @@
+.switch {
+    --toggle-size: 15px;
+    --toggle-padding: 4px;
+    position: relative;
+    /* for calculating the width it is important to understand that the difference in position between the on/off state is the
+    width of the toggle + the padding it has */
+    width: calc((var(--toggle-size) + var(--toggle-padding)) * 2 + var(--toggle-padding));
+    height: calc(var(--toggle-size) + var(--toggle-padding) * 2);
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* the pill shaped slider */
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #fff;
+    border: var(--bs-border-width) solid var(--bs-border-color);
+    border-radius: 34px;
+    -webkit-transition: .2s;
+    transition: .2s;
+}
+
+/* the circular toggle */
+.slider:before {
+    position: absolute;
+    content: "";
+    width: var(--toggle-size);
+    height: var(--toggle-size);
+    left: var(--toggle-padding);
+    bottom: var(--toggle-padding);
+    background-color: var(--bs-blue);
+    border-radius: 50%;
+    -webkit-transition: .2s;
+    transition: .2s;
+}
+
+/* move circular toggle once input is checked */
+input:checked + .slider:before {
+    -webkit-transform: translateX(calc(var(--toggle-size) + var(--toggle-padding)));
+    -ms-transform: translateX(calc(var(--toggle-size) + var(--toggle-padding)));
+    transform: translateX(calc(var(--toggle-size) + var(--toggle-padding)));
+}
+
+input:focus + .slider, .css-t3ipsp-control:focus-within {
+    box-shadow: 0 0 0 var(--bs-focus-ring-width) var(--bs-focus-ring-color);
+}
+
+input:focus + .slider, .css-t3ipsp-control {
+    border-color: #86b7fe !important;
+}
